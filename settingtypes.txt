@@ -1,0 +1,2 @@
+# Adds default loot for suspicous gravel and sand
+archaeology_default_loot (Add Default Loot) bool true
