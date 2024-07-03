@@ -1,17 +1,23 @@
 function archaeology.random(chance)
-    local randomNum = math.random(1, 100)
-    return randomNum <= chance
+    local random2 = math.random(1, 100)
+    return random2 <= chance
 end
 
 function archaeology.register_loot(def)
-    local lott = archaeology.registered_loot
     if not minetest.registered_items[def.name] then
         error("Item doesnt exist.")
     end
     table.insert(archaeology.registered_loot, def)
 end
 
-function archaeology.particle_spawn(pos, node, breaky)
+function archaeology.register_sus(name, def)
+    if not minetest.registered_items[name] then
+        error("Item doesnt exist.")
+    end
+    archaeology.registered_sus[name] = def
+end
+
+function archaeology.particle_spawn(pos, texture, breaky)
     local par = {a = 10, t = 0.025}
     if breaky == true then
         par = {a = 25, t = 0.11}
@@ -30,7 +36,7 @@ function archaeology.particle_spawn(pos, node, breaky)
         minsize = 1,
         maxsize = 1,
         collisiondetection = true,
-        texture = "default_"..node..".png",
+        texture = texture..".png",
         vertical = false
     })
 end
@@ -38,19 +44,19 @@ end
 function archaeology.execute_loot(pos)
     local node = minetest.get_node(pos)
     local meta = minetest.get_meta(pos)
-    --if not meta:get_int("archaeology_in_creative") then
+    if meta:get_string("archaeology_in_creative") == "true" then
         local total = 0
         for i, i_guess in ipairs(archaeology.registered_loot) do
             total = total+1
         end
         minetest.remove_node(pos)
         if total == 0 then
-            minetest.log("error", "Cant spawn a archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
+            minetest.log("error", "Cant spawn an archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
             return
         end
         local def = archaeology.registered_loot[math.random(1, total)]
         if archaeology.random(def.chance) then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
-    --end
+    end
 end

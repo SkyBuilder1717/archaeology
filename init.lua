@@ -1,10 +1,12 @@
 local modpath = minetest.get_modpath("archaeology")
 archaeology = {
     S = minetest.get_translator("archaeology"),
-    registered_loot = {}
+    registered_loot = {},
+    registered_sus = {}
 }
-Sdef = minetest.get_translator("default"),
-dofile(modpath .."/api.lua")
+Sdef = minetest.get_translator("default")
+S = archaeology.S
+dofile(modpath.."/api.lua")
 
 if minetest.settings:get_bool("archaeology_default_loot", true) then
     archaeology.register_loot({name="default:stick", chance=75})
@@ -20,7 +22,7 @@ if minetest.settings:get_bool("archaeology_default_loot", true) then
 end
 
 minetest.register_node("archaeology:sand", {
-	description = archaeology.S("Suspicous").." "..Sdef("Sand"),
+	description = S("Suspicous").." "..Sdef("Sand"),
 	tiles = {"default_sand.png^archaeology_suspicious.png"},
 	groups = {crumbly = 3, falling_node = 1},
 	sounds = default.node_sound_sand_defaults(),
@@ -30,9 +32,11 @@ minetest.register_node("archaeology:sand", {
 		}
 	},
 })
-
+archaeology.registered_sus("archaeology:sand", {
+    texture = "default_sand"
+})
 minetest.register_node("archaeology:gravel", {
-	description = archaeology.S("Suspicous").." "..Sdef("Gravel"),
+	description = S("Suspicous").." "..Sdef("Gravel"),
 	tiles = {"default_gravel.png^archaeology_suspicious.png"},
 	groups = {crumbly = 2, falling_node = 1},
 	sounds = default.node_sound_gravel_defaults(),
@@ -41,6 +45,9 @@ minetest.register_node("archaeology:gravel", {
 			{items = {""}}
 		}
 	},
+})
+archaeology.registered_sus("archaeology:gravel", {
+    texture = "default_gravel"
 })
 
 minetest.register_craft({
@@ -53,7 +60,7 @@ minetest.register_craft({
 })
 
 minetest.register_tool("archaeology:brush", {
-	description = archaeology.S("Brush"),
+	description = S("Brush"),
 	inventory_image = "archaeology_brush.png",
 	groups = {tool = 1},
 	on_use = function(itemstack, player, pointed_thing)
@@ -64,27 +71,18 @@ minetest.register_tool("archaeology:brush", {
         end
         local node = minetest.get_node(pos)
         local meta = minetest.get_meta(pos)
-        if node.name == "archaeology:gravel" or node.name == "archaeology:sand" then
+        if check(node.name, archaeology.registered_sus) then
             if meta:get_int("archaeology_is_ready") == nil then
                 meta:set_int("archaeology_is_ready", 0)
             end
-            minetest.sound_play({name = "archaeology_brush_"..math.random(1, 3)}, {to_player = name})
+            minetest.sound_play({name = "archaeology_brush"}, {to_player = name})
             meta:set_int("archaeology_is_ready", meta:get_int("archaeology_is_ready")+1)
             if meta:get_int("archaeology_is_ready") == 4 then
                 archaeology.execute_loot(pos)
-                if node.name == "archaeology:gravel" then
-                    archaeology.particle_spawn(pos, "gravel", true)
-                else
-                    archaeology.particle_spawn(pos, "sand", true)
-                end
+                archaeology.particle_spawn(pos, archaeology.registered_sus[node.name].texture, true)
             else
-                if node.name == "archaeology:gravel" then
-                    archaeology.particle_spawn(pos, "gravel")
-                else
-                    archaeology.particle_spawn(pos, "sand")
-                end
+                archaeology.particle_spawn(pos, archaeology.registered_sus[node.name].texture)
             end
-            --minetest.chat_send_player(name, dump(archaeology.registered_loot))
             itemstack:add_wear(180)
             player:set_wielded_item(itemstack)
         end
