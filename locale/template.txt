@@ -1,0 +1,5 @@
+# textdomain: archaeology
+Archaeology=
+Adds an looting and API in archaeologing=
+Suspicous=
+Brush=
