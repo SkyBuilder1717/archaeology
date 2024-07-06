@@ -32,7 +32,7 @@ minetest.register_node("archaeology:sand", {
 		}
 	},
 })
-archaeology.registered_sus("archaeology:sand", {
+archaeology.register_sus("archaeology:sand", {
     texture = "default_sand"
 })
 minetest.register_node("archaeology:gravel", {
@@ -46,7 +46,7 @@ minetest.register_node("archaeology:gravel", {
 		}
 	},
 })
-archaeology.registered_sus("archaeology:gravel", {
+archaeology.register_sus("archaeology:gravel", {
     texture = "default_gravel"
 })
 
