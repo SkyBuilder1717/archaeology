@@ -8,6 +8,15 @@ Sdef = minetest.get_translator("default")
 S = archaeology.S
 dofile(modpath.."/api.lua")
 
+local function check(v, t)
+    for _, val in pairs(t) do
+      if val == v then
+        return true
+      end
+    end
+    return false
+end
+
 if minetest.settings:get_bool("archaeology_default_loot", true) then
     archaeology.register_loot({name="default:stick", chance=75})
     archaeology.register_loot({name="default:flint", chance=70})
