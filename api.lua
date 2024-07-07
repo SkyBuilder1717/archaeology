@@ -44,19 +44,19 @@ end
 function archaeology.execute_loot(pos)
     local node = minetest.get_node(pos)
     local meta = minetest.get_meta(pos)
-    if meta:get_string("archaeology_in_creative") == "true" then
-        local total = 0
-        for i, i_guess in ipairs(archaeology.registered_loot) do
-            total = total+1
-        end
-        minetest.remove_node(pos)
-        if total == 0 then
-            minetest.log("error", "Cant spawn an archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
-            return
-        end
-        local def = archaeology.registered_loot[math.random(1, total)]
+    local total = 0
+    for i, i_guess in ipairs(archaeology.registered_loot) do
+        total = total+1
+    end
+    minetest.remove_node(pos)
+    if total == 0 then
+        minetest.log("error", "Cant spawn an archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
+        return
+    end
+    local def = archaeology.registered_loot[math.random(1, total)]
+    --if not meta:get_string("archaeology_in_creative") == "true" then
         if archaeology.random(def.chance) then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
-    end
+    --end
 end

@@ -8,11 +8,9 @@ Sdef = minetest.get_translator("default")
 S = archaeology.S
 dofile(modpath.."/api.lua")
 
-local function check(v, t)
-    for _, val in pairs(t) do
-      if val == v then
+local function check_sus(v)
+    if archaeology.registered_sus[v] then
         return true
-      end
     end
     return false
 end
@@ -40,6 +38,11 @@ minetest.register_node("archaeology:sand", {
 			{items = {""}}
 		}
 	},
+    on_place = function(stack, object, pointed_thing)
+        if object and object:is_player() then
+
+        end
+    end,
 })
 archaeology.register_sus("archaeology:sand", {
     texture = "default_sand"
@@ -80,7 +83,7 @@ minetest.register_tool("archaeology:brush", {
         end
         local node = minetest.get_node(pos)
         local meta = minetest.get_meta(pos)
-        if check(node.name, archaeology.registered_sus) then
+        if check_sus(node.name) then
             if meta:get_int("archaeology_is_ready") == nil then
                 meta:set_int("archaeology_is_ready", 0)
             end
