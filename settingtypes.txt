@@ -1,2 +1,5 @@
 # Adds default loot for suspicous gravel and sand
 archaeology_default_loot (Add Default Loot) bool true
+
+# Adds Vase and other items that connected to ceramic
+archaeology_vase (Adds Vase) bool false

@@ -1,3 +1,5 @@
+local S = archaeology.translate
+
 function archaeology.random(chance)
     local random2 = math.random(1, 100)
     return random2 <= chance
@@ -11,10 +13,29 @@ function archaeology.register_loot(def)
 end
 
 function archaeology.register_sus(name, def)
-    if not minetest.registered_items[name] then
-        error("Item doesnt exist.")
-    end
-    archaeology.registered_sus[name] = def
+    local def2 = {
+        description = S("Suspicous").." "..def.description,
+        tiles = {def.archaeology_texture..".png^archaeology_suspicious.png"},
+        groups = def.groups,
+        sounds = def.sound,
+        _ARCH_texture = def.archaeology_texture,
+        on_place = function(itemstack, placer, pointed_thing)
+            if pointed_thing.type == "node" then
+                if placer and placer:is_player() then
+                    local pos = minetest.get_pointed_thing_position(pointed_thing)
+                    local meta = minetest.get_meta(pos)
+                    meta:set_string("archaeology_in_creative", "true")
+                end
+            end
+        end,
+        drop = {
+            items = {
+                {items = {""}}
+            }
+        },
+    }
+    minetest.register_node(name, def2)
+    archaeology.registered_sus[name] = def2
 end
 
 function archaeology.particle_spawn(pos, texture, breaky)
@@ -54,9 +75,9 @@ function archaeology.execute_loot(pos)
         return
     end
     local def = archaeology.registered_loot[math.random(1, total)]
-    --if not meta:get_string("archaeology_in_creative") == "true" then
+    if not meta:get_string("archaeology_in_creative") == "true" then
         if archaeology.random(def.chance) then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
-    --end
+    end
 end
