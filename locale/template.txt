@@ -1,5 +1,14 @@
 # textdomain: archaeology
+
 Archaeology=
 Adds an looting and API in archaeologing=
+
 Suspicous=
 Brush=
+Ceramic Piece=
+Ceramic Vase=
+Owner: =
+(Has item)=
+Ceramic Converter=
+Convert=
+Wait...=
