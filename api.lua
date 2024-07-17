@@ -19,14 +19,21 @@ function archaeology.register_sus(name, def)
         groups = def.groups,
         sounds = def.sound,
         _ARCH_texture = def.archaeology_texture,
-        on_place = function(itemstack, placer, pointed_thing)
-            if pointed_thing.type == "node" then
-                if placer and placer:is_player() then
-                    local pos = minetest.get_pointed_thing_position(pointed_thing)
-                    local meta = minetest.get_meta(pos)
+        _ARCH_instrument = def.archaeology_tool,
+        after_place_node = function(pos, placer, stack, pointed_thing)
+            local meta = minetest.get_meta(pos)
+            if placer:is_player() then
+                local name = placer:get_player_name()
+                if minetest.is_creative_enabled(name) then
                     meta:set_string("archaeology_in_creative", "true")
+                else
+                    meta:set_string("archaeology_in_creative", "false")
                 end
+                meta:set_string("archaeology_placed_player", "true")
+                meta:set_string("owner", name)
+                return
             end
+            meta:set_string("archaeology_placed_player", "false")
         end,
         drop = {
             items = {
@@ -69,15 +76,16 @@ function archaeology.execute_loot(pos)
     for i, i_guess in ipairs(archaeology.registered_loot) do
         total = total+1
     end
-    minetest.remove_node(pos)
     if total == 0 then
         minetest.log("error", "Cant spawn an archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
         return
     end
     local def = archaeology.registered_loot[math.random(1, total)]
-    if not meta:get_string("archaeology_in_creative") == "true" then
+    local inc = meta:get("archaeology_placed_player")
+    if inc == "false" then
         if archaeology.random(def.chance) then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
     end
+    minetest.remove_node(pos)
 end
