@@ -2,8 +2,9 @@ local modpath = minetest.get_modpath("archaeology")
 local S = minetest.get_translator("archaeology")
 archaeology = {
     translate = S,
-    registered_loot = {},
+    registered_loots = {},
     registered_sus = {},
+    registered_tools = {},
     formspace = {
         ["converter"] = {
             ["wait"] = "formspec_version[6]"..
@@ -353,38 +354,15 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_tool("archaeology:brush", {
-	description = S("Brush"),
-	inventory_image = "archaeology_brush.png",
-	groups = {tool = 1},
-	on_use = function(itemstack, player, pointed_thing)
-        local name = player:get_player_name()
-        local pos = minetest.get_pointed_thing_position(pointed_thing)
-        if (pos == nil) or not (pointed_thing.type == "node") then
-            return
-        end
-        local node = minetest.get_node(pos)
-        local meta = minetest.get_meta(pos)
-        local iname = itemstack:get_name()
-        if check_sus(node.name) then
-            if not (archaeology.registered_sus[node.name]._ARCH_instrument == iname) then
-                return
-            end
-            if meta:get_int("archaeology_is_ready") == nil then
-                meta:set_int("archaeology_is_ready", 0)
-            end
-            minetest.sound_play({name = "archaeology_brush"}, {to_player = name})
-            meta:set_int("archaeology_is_ready", meta:get_int("archaeology_is_ready")+1)
-            if meta:get_int("archaeology_is_ready") == 4 then
-                archaeology.execute_loot(pos)
-                archaeology.particle_spawn(pos, minetest.registered_nodes[node.name]._ARCH_texture, true)
-            else
-                archaeology.particle_spawn(pos, minetest.registered_nodes[node.name]._ARCH_texture)
-            end
-            itemstack:add_wear(180)
-            player:set_wielded_item(itemstack)
-        end
-	end,
+archaeology.register_tool("archaeology:brush", {
+    description = S("Brush"),
+    texture = {"archaeology_brush.png"},
+    groups = {tool = 1},
+    tool_sound = "archaeology_brush",
+    wear_per_use = 180,
+
+    per_use = 1,
+    uses_to_clear = 4,
 })
 
 minetest.register_abm({

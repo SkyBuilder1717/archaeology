@@ -5,11 +5,48 @@ function archaeology.random(chance)
     return random2 <= chance
 end
 
+function archaeology.register_tool(name, def)
+    minetest.register_tool(name, {
+        description = def.description,
+        inventory_image = def.texture,
+        groups = def.groups,
+        on_use = function(itemstack, player, pointed_thing)
+            local name = player:get_player_name()
+            local pos = minetest.get_pointed_thing_position(pointed_thing)
+            if (pos == nil) or not (pointed_thing.type == "node") then
+                return
+            end
+            local node = minetest.get_node(pos)
+            local meta = minetest.get_meta(pos)
+            local iname = itemstack:get_name()
+            if check_sus(node.name) then
+                if not (archaeology.registered_sus[node.name]._ARCHAEOLOGY_instrument == iname) then
+                    return
+                end
+                if meta:get_int("archaeology_is_ready") == nil then
+                    meta:set_int("archaeology_is_ready", 0)
+                end
+                minetest.sound_play({name = def.tool_sound}, {to_player = name})
+                meta:set_int("archaeology_is_ready", meta:get_int("archaeology_is_ready")+def.per_use)
+                if meta:get_int("archaeology_is_ready") == def.uses_to_clear then
+                    archaeology.execute_loot(pos)
+                    archaeology.particle_spawn(pos, minetest.registered_nodes[node.name]._ARCHAEOLOGY_texture, true)
+                else
+                    archaeology.particle_spawn(pos, minetest.registered_nodes[node.name]._ARCHAEOLOGY_texture)
+                end
+                itemstack:add_wear(def.wear_per_use)
+                player:set_wielded_item(itemstack)
+            end
+        end,
+    })
+    archaeology.registered_tools[name] = def
+end
+
 function archaeology.register_loot(def)
     if not minetest.registered_items[def.name] then
         error("Item doesnt exist.")
     end
-    table.insert(archaeology.registered_loot, def)
+    table.insert(archaeology.registered_loots, def)
 end
 
 function archaeology.register_sus(name, def)
@@ -18,8 +55,8 @@ function archaeology.register_sus(name, def)
         tiles = {def.archaeology_texture..".png^archaeology_suspicious.png"},
         groups = def.groups,
         sounds = def.sound,
-        _ARCH_texture = def.archaeology_texture,
-        _ARCH_instrument = def.archaeology_tool,
+        _ARCHAEOLOGY_texture = def.archaeology_texture,
+        _ARCHAEOLOGY_instrument = def.archaeology_tool,
         after_place_node = function(pos, placer, stack, pointed_thing)
             local meta = minetest.get_meta(pos)
             if placer:is_player() then
