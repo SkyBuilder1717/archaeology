@@ -6,6 +6,14 @@ function archaeology.random(chance)
 end
 
 function archaeology.register_tool(name, def)
+    -- Handlers of wrong parameters
+    if (not def.uses_to_clear) or (def.uses_to_clear == 0) then def.uses_to_clear = 4 end
+    if (not def.wear_per_use) or (def.wear_per_use > 65535) or (0 > def.wear_per_use) then def.wear_per_use = 180 end
+    if (not def.per_use) or (def.per_use > 65535) or (0 > def.per_use) then def.per_use = 1 end
+    if not def.texture then def.texture = {"archaeology_placeholder.png"} end
+    if not def.groups then def.groups = {tool = 1} end
+    if not def.tool_sound then def.tool_sound = "archaeology_brush" end
+
     minetest.register_tool(name, {
         description = def.description,
         inventory_image = def.texture,
@@ -19,16 +27,18 @@ function archaeology.register_tool(name, def)
             local node = minetest.get_node(pos)
             local meta = minetest.get_meta(pos)
             local iname = itemstack:get_name()
+            -- Checks, if the block is sussybaka
             if check_sus(node.name) then
                 if not (archaeology.registered_sus[node.name]._ARCHAEOLOGY_instrument == iname) then
                     return
                 end
-                if meta:get_int("archaeology_is_ready") == nil then
+                local is_ready = meta:get_int("archaeology_is_ready")
+                if is_ready == nil then
                     meta:set_int("archaeology_is_ready", 0)
                 end
                 minetest.sound_play({name = def.tool_sound}, {to_player = name})
-                meta:set_int("archaeology_is_ready", meta:get_int("archaeology_is_ready")+def.per_use)
-                if meta:get_int("archaeology_is_ready") == def.uses_to_clear then
+                meta:set_int("archaeology_is_ready", is_ready+def.per_use)
+                if (is_ready == def.uses_to_clear) or (is_ready > def.uses_to_clear) then
                     archaeology.execute_loot(pos)
                     archaeology.particle_spawn(pos, minetest.registered_nodes[node.name]._ARCHAEOLOGY_texture, true)
                 else
@@ -43,6 +53,7 @@ function archaeology.register_tool(name, def)
 end
 
 function archaeology.register_loot(def)
+    -- Error Handler
     if not minetest.registered_items[def.name] then
         error("Item doesnt exist.")
     end
@@ -50,8 +61,19 @@ function archaeology.register_loot(def)
 end
 
 function archaeology.register_sus(name, def)
-    local def2 = {
-        description = S("Suspicous").." "..def.description,
+    -- Handlers of wrong parameters
+    if not def.archaeology_texture then def.archaeology_texture = {"unknown_node.png"} end
+    if not def.groups then def.groups = {falling_node = 1} end
+    if not def.archaeology_tool then
+        error("Parameter \"archaeology_tool\" cannot be empty!")
+    else
+        if not minetest.registered_items[def.archaeology_tool] then
+            error("Item doesnt exist.")
+        end
+    end
+
+    local nodedef = {
+        description = S("Suspicious").." "..def.description,
         tiles = {def.archaeology_texture..".png^archaeology_suspicious.png"},
         groups = def.groups,
         sounds = def.sound,
@@ -78,8 +100,8 @@ function archaeology.register_sus(name, def)
             }
         },
     }
-    minetest.register_node(name, def2)
-    archaeology.registered_sus[name] = def2
+    minetest.register_node(name, nodedef)
+    archaeology.registered_sus[name] = nodedef
 end
 
 function archaeology.particle_spawn(pos, texture, breaky)

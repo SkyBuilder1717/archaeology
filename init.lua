@@ -40,7 +40,9 @@ if minetest.settings:get_bool("archaeology_default_loot", true) then
     archaeology.register_loot({name="default:steel_ingot", chance=45})
     archaeology.register_loot({name="default:gold_ingot", chance=28})
     archaeology.register_loot({name="default:coal_lump", chance=65})
-    archaeology.register_loot({name="farming:string", chance=67})
+    if minetest.get_modpath("farming") then
+        archaeology.register_loot({name="farming:string", chance=67})
+    end
 end
 
 if minetest.settings:get_bool("archaeology_check_sus", false) then
@@ -328,6 +330,17 @@ if minetest.settings:get_bool("archaeology_vase", true) then
     end
 end
 
+archaeology.register_tool("archaeology:brush", {
+    description = S("Brush"),
+    texture = "archaeology_brush.png",
+    groups = {tool = 1},
+    tool_sound = "archaeology_brush",
+    wear_per_use = 180,
+
+    per_use = 1,
+    uses_to_clear = 4,
+})
+
 archaeology.register_sus("archaeology:sand", {
     description = Sdef("Sand"),
 	groups = {crumbly = 3, falling_node = 1},
@@ -352,17 +365,6 @@ minetest.register_craft({
 		{"", "default:bronze_ingot", ""},
 		{"", "default:stick", ""},
 	}
-})
-
-archaeology.register_tool("archaeology:brush", {
-    description = S("Brush"),
-    texture = {"archaeology_brush.png"},
-    groups = {tool = 1},
-    tool_sound = "archaeology_brush",
-    wear_per_use = 180,
-
-    per_use = 1,
-    uses_to_clear = 4,
 })
 
 minetest.register_abm({
