@@ -150,8 +150,8 @@ if minetest.settings:get_bool("archaeology_vase", true) then
             "archaeology_vase_side.png",
             "archaeology_vase_side.png"
         },
-        inventory_image = "archaeology_vase_inv.png",
-        wield_image = "archaeology_vase_inv.png",
+        inventory_image = "archaeology_vase_side.png",
+        wield_image = "archaeology_vase_side.png",
         is_ground_content = false,
         drawtype = "nodebox",
         paramtype = "light",
