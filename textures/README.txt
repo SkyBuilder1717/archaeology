@@ -1,5 +1,5 @@
 archaeology_vase_side.png, archaeology_vase_top.png,
-archaeology_brush.png and archaeology_vase_piece.png painted by Tim79000
+archaeology_brush.png and archaeology_vase_piece.png painted by Tim79000 (MIT)
 
 All other textures maded by SkyBuilder1717 (MIT)
 
