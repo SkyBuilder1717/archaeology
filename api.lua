@@ -5,6 +5,13 @@ function archaeology.random(chance)
     return random2 <= chance
 end
 
+local function check_sus(v)
+    if archaeology.registered_sus[v] then
+        return true
+    end
+    return false
+end
+
 function archaeology.register_tool(name, def)
     -- Handlers of wrong parameters
     if (not def.uses_to_clear) or (def.uses_to_clear == 0) then def.uses_to_clear = 4 end
