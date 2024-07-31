@@ -1,9 +1,9 @@
 name: Feature Request
 description: Give us an idea for our ancient mod!
-labels: ["idea"]
+labels: ["feature"]
 body:
   - type: textarea
-    id: describe-idea
+    id: describe-feature
     attributes:
       label: Describe your feature!
       description: What do you want in archaeology mod? 
