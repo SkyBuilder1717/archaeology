@@ -1,12 +1,12 @@
 name: Crash or Bug Report
-description: Report a bug or crash in mod while your game session in your server or world.
+description: Report a bug or crash in mod while your ancient things in game session.
 labels: ["bug"]
 body:
   - type: textarea
     id: describe-bug
     attributes:
       label: Describe your bug
-      description: What happened, and what did you expexted?
+      description: What happened, and what did you expected?
       placeholder: Tell us what you see!
     validations:
       required: true
