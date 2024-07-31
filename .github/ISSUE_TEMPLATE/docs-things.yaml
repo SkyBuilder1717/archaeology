@@ -1,0 +1,17 @@
+name: Missing Documentation
+description: Needs more information about API or mod?
+labels: ["documentation"]
+body:
+  - type: textarea
+    id: whats-wrong
+    attributes:
+      label: Whats we need to add
+      description: What we need to do with that thingy or API wiki?
+      placeholder: Tell us what we must to do with that!
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      placeholder: Paste here your screenshots about that documentation, we need to do something..
