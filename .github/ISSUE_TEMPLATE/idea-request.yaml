@@ -1,19 +1,17 @@
 name: Feature Request
-title: "/mycmd"
-description: Here you can request an new feature/idea to the mod!
+description: Give us an idea for our ancient mod!
 labels: ["idea"]
 body:
   - type: textarea
     id: describe-idea
     attributes:
-      label: Describe your idea
-      description: What do you want new in mod? Maybe new command?
-      placeholder: Your new feature or command description here!
-      value: New command called '/mycmd'! It can summon "dirt_with_grass" node!
+      label: Describe your feature!
+      description: What do you want in archaeology mod? 
+      placeholder: Describe your new feature here
     validations:
       required: true
   - type: textarea
-    id: screens
+    id: mda
     attributes:
-      label: Screenshots
-      description: If you has an screenshots of your idea / feature, you can paste them here!
+      label: Media
+      description: If you has an textures for feature or screenshots, you can send them here.
