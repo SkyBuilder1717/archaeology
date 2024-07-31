@@ -71,7 +71,7 @@ if minetest.settings:get_bool("archaeology_check_sus", false) then
                 user:set_wielded_item(itemstack)
             end
             if suscheck then
-                minetest.chat_send_player(name, S("@1, its a suspicous node. Can be cleared by @2!", sus, dump(archaeology.registered_sus[node.name]._ARCH_instrument)))
+                minetest.chat_send_player(name, S("@1, its a suspicous node. Can be cleared by @2!", sus, dump(archaeology.registered_sus[node.name]._ARCHAEOLOGY_instrument)))
                 return
             end
             minetest.chat_send_player(name, S("@1, its not a suspicous node, this is a average node of game.", sus))
