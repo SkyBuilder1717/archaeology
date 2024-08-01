@@ -149,7 +149,6 @@ function archaeology.execute_loot(pos)
     local def = archaeology.registered_loots[math.random(0, total)]
     local inc = meta:get_string("archaeology_placed_player")
     if inc == "" then
-        minetest.chat_send_all("by generation!")
         if archaeology.random(def.chance) then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
