@@ -93,13 +93,13 @@ function archaeology.register_sus(name, def)
                 if minetest.is_creative_enabled(name) then
                     meta:set_string("archaeology_in_creative", "true")
                 else
-                    meta:set_string("archaeology_in_creative", "false")
+                    meta:set_string("archaeology_in_creative", "")
                 end
                 meta:set_string("archaeology_placed_player", "true")
                 meta:set_string("owner", name)
                 return
             end
-            meta:set_string("archaeology_placed_player", "false")
+            meta:set_string("archaeology_placed_player", "")
         end,
         drop = {
             items = {
@@ -139,16 +139,17 @@ function archaeology.execute_loot(pos)
     local node = minetest.get_node(pos)
     local meta = minetest.get_meta(pos)
     local total = 0
-    for i, i_guess in ipairs(archaeology.registered_loots) do
-        total = total+1
-    end
+    for i, count in ipairs(archaeology.registered_loots) do
+        total = i
+      end
     if total == 0 then
         minetest.log("error", "Cant spawn an archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
         return
     end
-    local def = archaeology.registered_loots[math.random(1, total)]
-    local inc = meta:get("archaeology_placed_player")
-    if inc == "false" then
+    local def = archaeology.registered_loots[math.random(0, total)]
+    local inc = meta:get_string("archaeology_placed_player")
+    if inc == "" then
+        minetest.chat_send_all("by generation!")
         if archaeology.random(def.chance) then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
