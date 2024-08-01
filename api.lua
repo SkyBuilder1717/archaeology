@@ -139,14 +139,14 @@ function archaeology.execute_loot(pos)
     local node = minetest.get_node(pos)
     local meta = minetest.get_meta(pos)
     local total = 0
-    for i, i_guess in ipairs(archaeology.registered_loot) do
+    for i, i_guess in ipairs(archaeology.registered_loots) do
         total = total+1
     end
     if total == 0 then
         minetest.log("error", "Cant spawn an archaeology loot at "..pos.x.." "..pos.y.." "..pos.z.." ("..node.name..")")
         return
     end
-    local def = archaeology.registered_loot[math.random(1, total)]
+    local def = archaeology.registered_loots[math.random(1, total)]
     local inc = meta:get("archaeology_placed_player")
     if inc == "false" then
         if archaeology.random(def.chance) then
