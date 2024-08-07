@@ -1,7 +1,7 @@
-# Adds default loot for suspicous gravel and sand
+# Adds default loot for suspicious gravel and sand
 archaeology_default_loot (Add Default Loot) bool true
 
-# Adds item for checking, is node placed by player and is node sussy
+# Adds tool for checking, is node placed by player and is node sussy
 archaeology_check_sus (Check Sus Item) bool false
 
 # Adds Vase and other items that connected to ceramic
