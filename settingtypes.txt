@@ -4,5 +4,5 @@ archaeology_default_loot (Add Default Loot) bool true
 # Adds tool for checking, is node placed by player and is node sussy
 archaeology_check_sus (Check Sus Item) bool false
 
-# Adds Vase and other items that connected to ceramic
+# Adds Vase and other items that bind to ceramic
 archaeology_vase (Vase and Ceramics) bool true
