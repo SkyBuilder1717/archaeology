@@ -205,12 +205,13 @@ if minetest.settings:get_bool("archaeology_vase", true) then
             local inf2 = meta:get_string("infotext2")
             local name = clicker:get_player_name()
             if owner == name then
-                local item = meta:get_string("itemstring")
-                if (item == "" and not itemstack:is_empty()) then
+                local item = meta:get_string("itemstring") or ""
+                if (item == "" not itemstack:is_empty()) then
                     local imeta = itemstack:get_meta()
                     meta:set_string("infotext", inf2)
                     meta:set_string("itemstring", itemstack:to_string())
-                    clicker:set_wielded_item("")
+		    itemstack:clear()
+                    clicker:set_wielded_item(itemstack)
                 elseif (item and itemstack:is_empty()) then
                     pos.y = pos.y+1
                     minetest.add_item(pos, item)
