@@ -135,6 +135,9 @@ if minetest.settings:get_bool("archaeology_vase", true) then
         stack_max = 16,
         on_use = function(itemstack, user, pointed_thing)
             local pos = minetest.get_pointed_thing_position(pointed_thing, pointed_thing.above)
+            if pointed_thing.type == "node" then
+                return
+            end
             minetest.set_node(pos, {name="archaeology:ceramic"})
             itemstack:take_item()
             user:set_wielded_item(itemstack)
@@ -205,12 +208,12 @@ if minetest.settings:get_bool("archaeology_vase", true) then
             local inf2 = meta:get_string("infotext2")
             local name = clicker:get_player_name()
             if owner == name then
-                local item = meta:get_string("itemstring") or ""
-                if (item == "" not itemstack:is_empty()) then
+                local item = meta:get_string("itemstring")
+                if (item == "" and not itemstack:is_empty()) then
                     local imeta = itemstack:get_meta()
                     meta:set_string("infotext", inf2)
                     meta:set_string("itemstring", itemstack:to_string())
-		    itemstack:clear()
+                    itemstack:clear()
                     clicker:set_wielded_item(itemstack)
                 elseif (item and itemstack:is_empty()) then
                     pos.y = pos.y+1
@@ -376,7 +379,6 @@ minetest.register_abm({
     min_y = -265,
     max_y = -5,
     action = function(pos)
-        pos.y = pos.y+1
         minetest.add_node(pos, {name = "archaeology:gravel"})
     end,
 })
@@ -389,7 +391,6 @@ minetest.register_abm({
     min_y = -100,
     max_y = 1,
     action = function(pos)
-        pos.y = pos.y+1
         minetest.add_node(pos, {name = "archaeology:sand"})
     end,
 })
