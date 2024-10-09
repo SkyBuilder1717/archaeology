@@ -71,10 +71,10 @@ if minetest.settings:get_bool("archaeology_check_sus", false) then
                 user:set_wielded_item(itemstack)
             end
             if suscheck then
-                minetest.chat_send_player(name, S("@1, its a suspicous node. Can be cleared by @2!", sus, dump(archaeology.registered_sus[node.name]._ARCHAEOLOGY_instrument)))
+                minetest.chat_send_player(name, S("@1, its a suspicious node. Can be cleared by @2!", sus, dump(archaeology.registered_sus[node.name]._ARCHAEOLOGY_instrument)))
                 return
             end
-            minetest.chat_send_player(name, S("@1, its not a suspicous node, this is a average node of game.", sus))
+            minetest.chat_send_player(name, S("@1, its not a suspicious node, this is a average node of game.", sus))
         end,
         on_use = function(itemstack, user, pointed_thing)
             if (pointed_thing.type == "nothing") or (pointed_thing.type == "object") then
@@ -372,24 +372,24 @@ minetest.register_craft({
 })
 
 minetest.register_abm({
-    label = "Sussy Gravel Appear",
+    label = "Suspicious Gravel Appear",
     nodenames = {"default:gravel"},
-    interval = 100,
+    interval = 1500,
     chance = 66,
     min_y = -265,
-    max_y = -5,
+    max_y = -10,
     action = function(pos)
         minetest.add_node(pos, {name = "archaeology:gravel"})
     end,
 })
 
 minetest.register_abm({
-    label = "Sussy Amogussy Sandy Spawny",
+    label = "Suspicious Sand Spawn",
     nodenames = {"default:sand"},
-    interval = 110,
+    interval = 1000,
     chance = 95,
     min_y = -100,
-    max_y = 1,
+    max_y = 0,
     action = function(pos)
         minetest.add_node(pos, {name = "archaeology:sand"})
     end,
