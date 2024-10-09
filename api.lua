@@ -80,7 +80,7 @@ function archaeology.register_sus(name, def)
     end
 
     local nodedef = {
-        description = S("Suspicious").." "..def.description,
+        description = S("Suspicious @1", def.description),
         tiles = {def.archaeology_texture..".png^archaeology_suspicious.png"},
         groups = def.groups,
         sounds = def.sound,
