@@ -1,8 +1,8 @@
 local S = archaeology.translate
 
-function archaeology.random(chance)
-    local random2 = math.random(1, 100)
-    return random2 <= chance
+local function percentage_random(chance)
+    local random = math.random(1, 100)
+    return random <= chance
 end
 
 local function check_sus(v)
@@ -11,6 +11,16 @@ local function check_sus(v)
     end
     return false
 end
+
+function contains(t, val)
+    for _, v in pairs(t) do
+        if v == val then
+            return true
+        end
+    end
+    return false
+end
+
 
 function archaeology.register_tool(name, def)
     -- Handlers of wrong parameters
@@ -21,6 +31,7 @@ function archaeology.register_tool(name, def)
     if not def.groups then def.groups = {tool = 1} end
     if not def.tool_sound then def.tool_sound = "archaeology_brush" end
 
+    -- Registering of our tool, for brushing
     minetest.register_tool(name, {
         description = def.description,
         inventory_image = def.texture,
@@ -60,10 +71,11 @@ function archaeology.register_tool(name, def)
 end
 
 function archaeology.register_loot(def)
-    -- Error Handler
+    -- Handlers of wrong parameters
     if not minetest.registered_items[def.name] then
         error("Item doesnt exist.")
     end
+    if not def.nodes then error("Missing \"nodes\" parameter.") end
     table.insert(archaeology.registered_loots, def)
 end
 
@@ -149,7 +161,7 @@ function archaeology.execute_loot(pos)
     local def = archaeology.registered_loots[math.random(1, total)]
     local inc = meta:get_string("archaeology_placed_player")
     if (inc == "") and def then
-        if archaeology.random(def.chance) then
+        if percentage_random(def.chance) and (contains(def.nodes, node.name))then
             minetest.add_item({x=pos.x, y=pos.y, z=pos.z}, def.name)
         end
     end
