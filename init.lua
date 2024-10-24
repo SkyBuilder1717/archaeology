@@ -31,17 +31,17 @@ local function check_sus(v)
 end
 
 if minetest.settings:get_bool("archaeology_default_loot", true) then
-    archaeology.register_loot({name="default:stick", chance=75})
-    archaeology.register_loot({name="default:flint", chance=65})
-    archaeology.register_loot({name="default:diamond", chance=19})
-    archaeology.register_loot({name="default:dirt", chance=60})
-    archaeology.register_loot({name="default:mese_crystal", chance=15})
-    archaeology.register_loot({name="default:cactus", chance=30})
-    archaeology.register_loot({name="default:steel_ingot", chance=45})
-    archaeology.register_loot({name="default:gold_ingot", chance=28})
-    archaeology.register_loot({name="default:coal_lump", chance=65})
+    archaeology.register_loot({name="default:stick", chance=75, nodes = {"archaeology:sand"}})
+    archaeology.register_loot({name="default:flint", chance=65, nodes = {"archaeology:gravel"}})
+    archaeology.register_loot({name="default:diamond", chance=19, nodes = {"archaeology:gravel"}})
+    archaeology.register_loot({name="default:dirt", chance=60, nodes = {"archaeology:sand", "archaeology:gravel"}})
+    archaeology.register_loot({name="default:mese_crystal", chance=15, nodes = {"archaeology:sand"}})
+    archaeology.register_loot({name="default:cactus", chance=30, nodes = {"archaeology:sand"}})
+    archaeology.register_loot({name="default:steel_ingot", chance=45, nodes = {"archaeology:gravel"}})
+    archaeology.register_loot({name="default:gold_ingot", chance=28, nodes = {"archaeology:gravel"}})
+    archaeology.register_loot({name="default:coal_lump", chance=65, nodes = {"archaeology:gravel"}})
     if minetest.get_modpath("farming") then
-        archaeology.register_loot({name="farming:string", chance=67})
+        archaeology.register_loot({name="farming:string", chance=67, nodes = {"archaeology:sand", "archaeology:gravel"}})
     end
 end
 
