@@ -19,6 +19,14 @@ archaeology = {
                 "button[3.8,3.9;3,0.8;cook;"..S("Convert").."]",
         },
     },
+
+    settings = {
+        default_loot = minetest.settings:get_bool("archaeology_default_loot", true),
+        default_sus = minetest.settings:get_bool("archaeology_default_suspicious", true),
+        default_tool = minetest.settings:get_bool("archaeology_default_tool", true),
+        check_sus = minetest.settings:get_bool("archaeology_check_sus", false),
+        vase = minetest.settings:get_bool("archaeology_vase", true),
+    },
 }
 local Sdef = minetest.get_translator("default")
 dofile(modpath.."/api.lua")
@@ -30,22 +38,22 @@ local function check_sus(v)
     return false
 end
 
-if minetest.settings:get_bool("archaeology_default_loot", true) then
-    archaeology.register_loot({name="default:stick", chance=75, nodes = {"archaeology:sand"}})
-    archaeology.register_loot({name="default:flint", chance=65, nodes = {"archaeology:gravel"}})
-    archaeology.register_loot({name="default:diamond", chance=19, nodes = {"archaeology:gravel"}})
-    archaeology.register_loot({name="default:dirt", chance=60, nodes = {"archaeology:sand", "archaeology:gravel"}})
-    archaeology.register_loot({name="default:mese_crystal", chance=15, nodes = {"archaeology:sand"}})
-    archaeology.register_loot({name="default:cactus", chance=30, nodes = {"archaeology:sand"}})
-    archaeology.register_loot({name="default:steel_ingot", chance=45, nodes = {"archaeology:gravel"}})
-    archaeology.register_loot({name="default:gold_ingot", chance=28, nodes = {"archaeology:gravel"}})
-    archaeology.register_loot({name="default:coal_lump", chance=65, nodes = {"archaeology:gravel"}})
+if archaeology.settings.default_loot then
+    archaeology.register_loot({name="default:stick", chance=75, nodes={"archaeology:sand"}})
+    archaeology.register_loot({name="default:flint", chance=65, nodes={"archaeology:gravel"}})
+    archaeology.register_loot({name="default:diamond", chance=19, nodes={"archaeology:gravel"}})
+    archaeology.register_loot({name="default:dirt", chance=60, nodes={"archaeology:sand", "archaeology:gravel"}})
+    archaeology.register_loot({name="default:mese_crystal", chance=15, nodes={"archaeology:sand"}})
+    archaeology.register_loot({name="default:cactus", chance=30, nodes={"archaeology:sand"}})
+    archaeology.register_loot({name="default:steel_ingot", chance=45, nodes={"archaeology:gravel"}})
+    archaeology.register_loot({name="default:gold_ingot", chance=28, nodes={"archaeology:gravel"}})
+    archaeology.register_loot({name="default:coal_lump", chance=65, nodes={"archaeology:gravel"}})
     if minetest.get_modpath("farming") then
-        archaeology.register_loot({name="farming:string", chance=67, nodes = {"archaeology:sand", "archaeology:gravel"}})
+        archaeology.register_loot({name="farming:string", chance=67, nodes={"archaeology:sand", "archaeology:gravel"}})
     end
 end
 
-if minetest.settings:get_bool("archaeology_check_sus", false) then
+if archaeology.settings.check_sus then
     minetest.register_tool("archaeology:check_sus", {
         description = S("Check Sus Stick").."\n\n"..core.colorize("lightgrey", S("Right-Click to check sussy").."\n"..S("Left-Click to check placed suspicious node by player, or not")),
         inventory_image = "archaeology_check_sus.png",
@@ -110,7 +118,7 @@ if minetest.settings:get_bool("archaeology_check_sus", false) then
     })
 end
 
-if minetest.settings:get_bool("archaeology_vase", true) then
+if archaeology.settings.vase then
     minetest.register_node("archaeology:ceramic", {
         tiles = {"archaeology_piece_node.png"},
         walkable = false,
@@ -312,8 +320,8 @@ if minetest.settings:get_bool("archaeology_vase", true) then
     })
     minetest.register_alias("converter", "archaeology:converter")
     minetest.register_alias("ceramic_converter", "archaeology:converter")
-    if minetest.settings:get_bool("archaeology_default_loot", true) then
-        archaeology.register_loot({name="archaeology:piece", chance=35})
+    if archaeology.settings.default_loot then
+        archaeology.register_loot({name="archaeology:piece", chance=35, nodes={"archaeology:sand", "archaeology:gravel"}})
         minetest.register_craft({
             output = "archaeology:converter",
             recipe = {
@@ -334,64 +342,68 @@ if minetest.settings:get_bool("archaeology_vase", true) then
     end
 end
 
-archaeology.register_tool("archaeology:brush", {
-    description = S("Brush"),
-    texture = "archaeology_brush.png",
-    groups = {tool = 1},
-    tool_sound = "archaeology_brush",
-    wear_per_use = 180,
+if archaeology.settings.default_tool then
+    archaeology.register_tool("archaeology:brush", {
+        description = S("Brush"),
+        texture = "archaeology_brush.png",
+        groups = {tool = 1},
+        tool_sound = "archaeology_brush",
+        wear_per_use = 180,
 
-    per_use = 1,
-    uses_to_clear = 4,
-})
+        per_use = 1,
+        uses_to_clear = 4,
+    })
 
-archaeology.register_sus("archaeology:sand", {
-    description = Sdef("Sand"),
-	groups = {crumbly = 3, falling_node = 1},
-	sound = default.node_sound_sand_defaults(),
+    minetest.register_craft({
+        output = "archaeology:brush",
+        recipe = {
+            {"farming:string", "farming:string", "farming:string"},
+            {"", "default:bronze_ingot", ""},
+            {"", "default:stick", ""},
+        }
+    })
+end
 
-    archaeology_tool = "archaeology:brush",
-    archaeology_texture = "default_sand",
-})
-archaeology.register_sus("archaeology:gravel", {
-    description = Sdef("Gravel"),
-	groups = {crumbly = 2, falling_node = 1},
-	sound = default.node_sound_gravel_defaults(),
+if archaeology.settings.default_sus then
+    archaeology.register_sus("archaeology:sand", {
+        description = Sdef("Sand"),
+        groups = {crumbly = 3, falling_node = 1},
+        sound = default.node_sound_sand_defaults(),
 
-    archaeology_tool = "archaeology:brush",
-    archaeology_texture = "default_gravel",
-})
+        archaeology_tool = "archaeology:brush",
+        archaeology_texture = "default_sand",
+    })
 
-minetest.register_craft({
-	output = "archaeology:brush",
-	recipe = {
-		{"farming:string", "farming:string", "farming:string"},
-		{"", "default:bronze_ingot", ""},
-		{"", "default:stick", ""},
-	}
-})
+    archaeology.register_sus("archaeology:gravel", {
+        description = Sdef("Gravel"),
+        groups = {crumbly = 2, falling_node = 1},
+        sound = default.node_sound_gravel_defaults(),
 
-minetest.register_abm({
-    label = "Suspicious Gravel Appear",
-    nodenames = {"default:gravel"},
-    interval = 1500,
-    chance = 66,
-    min_y = -265,
-    max_y = -10,
-    action = function(pos)
-        minetest.add_node(pos, {name = "archaeology:gravel"})
-    end,
-})
+        archaeology_tool = "archaeology:brush",
+        archaeology_texture = "default_gravel",
+    })
 
-minetest.register_abm({
-    label = "Suspicious Sand Spawn",
-    nodenames = {"default:sand"},
-    interval = 1000,
-    chance = 95,
-    min_y = -100,
-    max_y = 0,
-    action = function(pos)
-        minetest.add_node(pos, {name = "archaeology:sand"})
-    end,
-})
+    minetest.register_abm({
+        label = "Suspicious Gravel Appear",
+        nodenames = {"default:gravel"},
+        interval = 1500,
+        chance = 66,
+        min_y = -265,
+        max_y = -10,
+        action = function(pos)
+            minetest.add_node(pos, {name = "archaeology:gravel"})
+        end,
+    })
 
+    minetest.register_abm({
+        label = "Suspicious Sand Spawn",
+        nodenames = {"default:sand"},
+        interval = 1000,
+        chance = 95,
+        min_y = -100,
+        max_y = 0,
+        action = function(pos)
+            minetest.add_node(pos, {name = "archaeology:sand"})
+        end,
+    })
+end

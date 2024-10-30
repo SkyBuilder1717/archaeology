@@ -1,5 +1,11 @@
-# Adds default loot for suspicous gravel and sand
-archaeology_default_loot (Add Default Loot) bool true
+# Adds default loot for suspicious gravel and sand
+archaeology_default_loot (Default Loot) bool true
+
+# Add default MTG suspicious sand and gravel nodes
+archaeology_default_suspicious (Default Suspicious Nodes) bool true
+
+# Adds default tool to clear suspicious nodes for mod: Brush
+archaeology_default_tool (Default Tool) bool true
 
 # Adds item for checking, is node placed by player and is node sussy
 archaeology_check_sus (Check Sus Item) bool false
